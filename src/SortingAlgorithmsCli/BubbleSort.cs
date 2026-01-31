@@ -2,54 +2,89 @@
 
 public static class BubbleSort
 {
-    public static void Sort(int[] arr)
+    /// <summary>
+    /// Time Complexity
+    /// Worst case: O(n^2)
+    /// Average case: O(n^2)
+    /// Best case without early ending: O(n^2)
+    /// Best case with early ending: O(n)
+    /// 
+    /// Space Complexity: O(1)
+    /// 
+    /// Stable
+    /// </summary>
+    public static void Sort(int[] numbers)
     {
-        var upper = arr.GetUpperBound(0);
-        for (var outer = upper; outer >= 1; outer--)
+        for (int end = numbers.Length - 1; end > 0; end--)
         {
-            for (var inner = 0; inner <= outer - 1; inner++)
+            for (int i = 0; i < end; i++)
             {
-                if (arr[inner] > arr[inner + 1])
+                if (numbers[i] > numbers[i + 1])
                 {
-                    Utils.Swap(arr, inner, inner + 1);
+                    Utilities.Swap(i, i + 1, numbers);
                 }
             }
         }
     }
 
-    public static int SortWithOperationCount(int[] arr)
+    public static void SortWithEarlyEnd(int[] numbers)
     {
-        var operations = 0;
-
-        var upper = arr.GetUpperBound(0);
-        operations++;
-        for (var outer = upper; outer >= 1; outer--)
+        for (int end = numbers.Length - 1; end > 0; end--)
         {
-            operations++;
-            for (var inner = 0; inner <= outer - 1; inner++)
+            bool isSwapped = false;
+            for (int i = 0; i < end; i++)
             {
-                operations++;
-                operations++;
-                if (arr[inner] > arr[inner + 1])
+                if (numbers[i] > numbers[i + 1])
                 {
-                    Utils.Swap(arr, inner, inner + 1);
-                    operations++;
+                    Utilities.Swap(i, i + 1, numbers);
+                    isSwapped = true;
                 }
-
-                operations++;
             }
 
-            operations++;
+            if (!isSwapped) break;
+        }
+    }
+
+    public static long SortWithComparisons(int[] numbers)
+    {
+        int countOfComparisons = 0;
+
+        for (int end = numbers.Length - 1; end > 0; end--)
+        {
+            for (int i = 0; i < end; i++)
+            {
+                countOfComparisons++;
+                if (numbers[i] > numbers[i + 1])
+                {
+                    Utilities.Swap(i, i + 1, numbers);
+                }
+            }
         }
 
-        return operations;
+        return countOfComparisons;
     }
-}
 
-public static class Utils
-{
-    public static void Swap(int[] arr, int left, int right)
+    public static long SortWithComparisonsWithEarlyEnd(int[] numbers)
     {
-        (arr[left], arr[right]) = (arr[right], arr[left]);
+        int countOfComparisons = 0;
+
+        for (int end = numbers.Length - 1; end > 0; end--) 
+        {
+            bool isSwapped = false;
+
+            for (int i = 0; i < end; i++)
+            { 
+                countOfComparisons++;
+                if (numbers[i] > numbers[i + 1])
+                {
+                    Utilities.Swap(i, i + 1, numbers);
+                    isSwapped = true;
+                }
+            }
+
+            if (!isSwapped) break;
+        }
+
+        return countOfComparisons;
     }
 }

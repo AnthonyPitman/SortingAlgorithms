@@ -2,71 +2,59 @@
 
 namespace SortingAlgorithmsCli;
 
-internal static class Program
+public class Program
 {
-    const int MaxSize = 10_000;
-
     static void Main()
     {
-        Console.Write("How many runs? ");
-        if (!int.TryParse(Console.ReadLine(), out int runs) || runs <= 0)
+        const int TimesToRunSorting = 100;
+        Stopwatch sw = new();
+        long comparisons = 0;
+        Console.Write("Enter number of elements to test with (less than 1,000,000,000): ");
+        string numberOfElements = Console.ReadLine() ?? "10";
+        if (!int.TryParse(numberOfElements, out int value)) return;
+
+        Console.Write("Do you want to accept duplicates (y/N)? ");
+        string acceptDuplicates = Console.ReadLine() ?? "N";
+        Console.Write("Do you want to have negative numbers (y/N)? ");
+        string allowNegatives = Console.ReadLine() ?? "N";
+        
+#pragma warning disable CA1862 // Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
+        int[] originalArr = Utilities.GenerateArray(value, acceptDuplicates.ToUpperInvariant() == "Y", allowNegatives.ToUpperInvariant() == "Y");
+#pragma warning restore CA1862 // Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
+        
+        //originalArr.Sort(); // Check for an already sorted array
+
+        List<double> times = []; // TODO: take multiple measurements
+        int[] arr = [];
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        for (var i = 0; i <= TimesToRunSorting; i++)
         {
-            Console.WriteLine("Invalid number of runs.");
-            return;
-        }
+            arr = (int[])originalArr.Clone(); // Copy the original array so we are not sorting an already sorted array
+            sw.Restart();
 
-        Console.Write("Array size? ");
-        if (!int.TryParse(Console.ReadLine(), out int size) || size <= 0)
-        {
-            Console.WriteLine("Invalid array size.");
-            return;
-        }
+            //BubbleSort.Sort(arr);
+            //comparisons = BubbleSort.SortWithComparisons(arr);
+            //BubbleSort.SortWithEarlyEnd(arr);
+            comparisons = BubbleSort.SortWithComparisonsWithEarlyEnd(arr);
+            sw.Stop();
+            times.Add(sw.Elapsed.TotalMicroseconds);
+            Console.WriteLine($"({i} of {TimesToRunSorting}) Time to run: {times.Last():N2}us");
+        }     
 
-        double totalMilliseconds = 0;
-        double totalMicroseconds = 0;
-        double totalNanoseconds = 0;
-        double totalSeconds = 0;
+        bool isSorted = Utilities.IsSorted(arr);
+        Console.WriteLine($"{Environment.NewLine}{Environment.NewLine}Array is sorted: {isSorted}{Environment.NewLine}");
+        Console.WriteLine("Skipping 1 outlier.");
 
-        int[] original = GenerateRandomArray(size);
-
-        for (int i = 0; i < runs; i++)
-        {
-            int[] arr = (int[])original.Clone(); // clone to avoid modifying original
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            BubbleSort.Sort(arr);
-            stopwatch.Stop();
-
-            totalSeconds += stopwatch.Elapsed.TotalSeconds;
-            totalMilliseconds += stopwatch.Elapsed.TotalMilliseconds;
-            totalMicroseconds += stopwatch.Elapsed.TotalMicroseconds;
-            totalNanoseconds += stopwatch.Elapsed.TotalNanoseconds;
-        }
-
-        Console.WriteLine($"\nAverage time over {runs} runs:");
-        double averageSeconds = totalSeconds / runs;
-        double averageMilliseconds = totalMilliseconds / runs;
-        double averageMicroseconds = totalMicroseconds / runs;
-        double averageNanoseconds = totalNanoseconds / runs;
-
-        Console.WriteLine($"Seconds     : {averageSeconds} s");
-        Console.WriteLine($"Milliseconds: {averageMilliseconds} ms");
-        Console.WriteLine($"Microseconds: {averageMicroseconds} us");
-        Console.WriteLine($"Nanoseconds : {averageNanoseconds} ns");
-
-        var operationCount = BubbleSort.SortWithOperationCount((int[])original.Clone());
-        Console.WriteLine($"Operation count: {operationCount}");
-    }
-
-    static int[] GenerateRandomArray(int size)
-    {
-        Random rand = new();
-        int[] arr = new int[size];
-        for (var i = 0; i < size; i++)
-        {
-            arr[i] = rand.Next(0, MaxSize);
-        }
-
-        return arr;
+        var filtered = times.Skip(1).ToList();
+        Console.WriteLine($"Maximum runtime: {filtered.Max():N2}us");
+        Console.WriteLine($"Minimum runtime: {filtered.Min():N2}us");
+        Console.WriteLine($"Average runtime: {filtered.Average():N2}us");
+        Console.WriteLine($"{Environment.NewLine}Number of comparisons: {comparisons}");
+        Console.WriteLine($"Ratio = {comparisons / (value * (value - 1) / 2.0)}");
     }
 }
+

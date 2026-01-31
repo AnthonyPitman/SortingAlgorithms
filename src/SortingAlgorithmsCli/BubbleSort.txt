@@ -1,0 +1,26 @@
+﻿2 5 8 1 3
+2 5 1 8 3
+2 5 1 3 8 4 comparisions, 2 swap
+
+2 5 1 3 8
+2 1 5 3 8 2 comps, 1 swap
+2 1 3 5 8 3 comps, 1 swap
+
+2 1 3 5 8
+1 2 3 5 8 1 comps, 1 swap
+		  2 comps
+
+1 2 3 5 8 1 comps
+
+
+
+
+
+count	| Max   | Min   | Average | Comparisions 
+10		| 300ns | 100ns | 150     | 
+100		| 
+1000	| 
+10000	| 
+100000	| 
+
+
