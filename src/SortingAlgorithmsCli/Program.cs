@@ -39,7 +39,11 @@ public class Program
             //BubbleSort.Sort(arr);
             //comparisons = BubbleSort.SortWithComparisons(arr);
             //BubbleSort.SortWithEarlyEnd(arr);
-            comparisons = BubbleSort.SortWithComparisonsWithEarlyEnd(arr);
+            //comparisons = BubbleSort.SortWithComparisonsWithEarlyEnd(arr);
+            
+            //SelectionSort.Sort(arr);
+            comparisons = SelectionSort.SortWithComparisons(arr);
+            
             sw.Stop();
             times.Add(sw.Elapsed.TotalMicroseconds);
             Console.WriteLine($"({i} of {TimesToRunSorting}) Time to run: {times.Last():N2}us");
