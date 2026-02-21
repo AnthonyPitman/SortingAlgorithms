@@ -31,30 +31,37 @@ public static class Utilities
         return true;
     }
 
-    public static int[] GenerateArray(int numberOfElements, bool allowDuplicates = false, bool allowNegativeValues = false)
+    public static int[] GenerateArray(int numberOfElements, bool allowNegativeValues = false)
     {
         Random r = new();
         int[] arr = new int[numberOfElements];
 
         int start = allowNegativeValues ? int.MinValue : 0;
-        int end = int.MaxValue;
+        const int end = int.MaxValue;
 
-        if (allowDuplicates)
+        for (var i = 0; i < numberOfElements; i++)
         {
-            for (var i = 0; i < numberOfElements; i++)
-            {
-                arr[i] = r.Next(start, end);
-            }
+            arr[i] = r.Next(start, end);
         }
-        else
+
+        return arr;
+    }
+    
+    public static int[] GenerateArrayWithDuplicates(int numberOfElements, bool allowNegativeValues = false)
+    {
+        Random r = new();
+        int[] arr = new int[numberOfElements];
+
+        int start = allowNegativeValues ? int.MinValue : 0;
+        const int end = int.MaxValue;
+
+        HashSet<int> used = [];
+        int count = 0;
+        while (count < numberOfElements)
         {
-            int count = 0;
-            while (count < numberOfElements)
-            {
-                var random = r.Next(start, end);
-                if (arr.Contains(random)) continue;
+            var random = r.Next(start, end);
+            if (used.Add(random))
                 arr[count++] = random;
-            }
         }
 
         return arr;

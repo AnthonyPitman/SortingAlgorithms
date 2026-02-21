@@ -19,7 +19,11 @@ public class Program
         string allowNegatives = Console.ReadLine() ?? "N";
         
 #pragma warning disable CA1862 // Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
-        int[] originalArr = Utilities.GenerateArray(value, acceptDuplicates.ToUpperInvariant() == "Y", allowNegatives.ToUpperInvariant() == "Y");
+
+        var originalArr = allowNegatives.ToUpperInvariant() == "Y"
+            ? Utilities.GenerateArrayWithDuplicates(value, allowNegatives.ToUpperInvariant() == "Y")
+            : Utilities.GenerateArray(value, allowNegatives.ToUpperInvariant() == "Y");
+        
 #pragma warning restore CA1862 // Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
         
         //originalArr.Sort(); // Check for an already sorted array
@@ -42,7 +46,15 @@ public class Program
             //comparisons = BubbleSort.SortWithComparisonsWithEarlyEnd(arr);
             
             //SelectionSort.Sort(arr);
-            comparisons = SelectionSort.SortWithComparisons(arr);
+            //comparisons = SelectionSort.SortWithComparisons(arr);
+            
+            //InsertionSort.Sort(arr);
+            //comparisons = InsertionSort.SortWithComparisons([1,2,3,4,5,6,7,8,9]);
+            
+            // QuickSort.Sort(arr);
+            //comparisons = QuickSort.SortWithComparisons(arr);
+            
+            MergeSort.Sort(arr);
             
             sw.Stop();
             times.Add(sw.Elapsed.TotalMicroseconds);
